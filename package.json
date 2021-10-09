@@ -1,0 +1,19 @@
+{
+  "name": "ac-bootstrap-elasticsearch",
+  "version": "1.0.7",
+  "description": "OpenSearch (ElasticSearch) init for AC apps",
+  "repository": "admiralcloud/ac-bootstrap-elasticsearch",
+  "author": "Mark Poepping <mark.poepping@admiralcloud.com>",
+  "license": "MIT",
+  "dependencies": {
+    "@elastic/elasticsearch": "7.13.0",
+    "async": "^3.2.1",
+    "aws-sdk": "^2.1004.0",
+    "lodash": "^4.17.21",
+    "uuid": "^8.3.2"
+  },
+  "devDependencies": {
+    "ac-semantic-release": "^0.2.7",
+    "eslint": "^7.32.0"
+  }
+}
