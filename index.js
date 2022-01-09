@@ -43,7 +43,7 @@ module.exports = (acapi) => {
       }
 
         // instanciate ES for this database/index
-      let url = (acapi.config.localElasticSearch ? 'http' : _.get(server, 'protocol', 'https')) + '://' + _.get(server, 'host') + ':' + (acapi.config.localElasticSearch ? 9200 : _.get(server, 'port'))
+      let url = (_.get(acapi.config, 'localElasticSearch.protocol') || _.get(server, 'protocol', 'https')) + '://' + _.get(server, 'host') + ':' + (_.get(acapi.config, 'localElasticSearch.port') ||  _.get(server, 'port'))
       let esConfig = {
         node: {
           url: new URL(url),
