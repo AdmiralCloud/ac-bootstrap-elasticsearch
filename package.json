@@ -7,13 +7,13 @@
   "license": "MIT",
   "dependencies": {
     "@elastic/elasticsearch": "7.13.0",
-    "async": "^3.2.2",
-    "aws-sdk": "^2.1053.0",
+    "async": "^3.2.3",
+    "aws-sdk": "^2.1120.0",
     "lodash": "^4.17.21",
     "uuid": "^8.3.2"
   },
   "devDependencies": {
-    "ac-semantic-release": "^0.2.7",
-    "eslint": "^8.6.0"
+    "ac-semantic-release": "^0.3.0",
+    "eslint": "^8.14.0"
   }
 }
