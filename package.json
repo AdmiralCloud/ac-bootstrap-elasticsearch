@@ -8,12 +8,12 @@
   "dependencies": {
     "@elastic/elasticsearch": "7.13.0",
     "async": "^3.2.3",
-    "aws-sdk": "^2.1125.0",
+    "aws-sdk": "^2.1130.0",
     "lodash": "^4.17.21",
     "uuid": "^8.3.2"
   },
   "devDependencies": {
     "ac-semantic-release": "^0.3.0",
-    "eslint": "^8.14.0"
+    "eslint": "^8.15.0"
   }
 }
