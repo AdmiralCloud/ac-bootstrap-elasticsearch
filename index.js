@@ -43,8 +43,11 @@ module.exports = (acapi) => {
       }
 
       // instanciate ES for this database/index
+      const protocol = _.get(acapi.config, 'localElasticSearch.protocol') || _.get(server, 'protocol', 'https')
+      const host = _.get(acapi.config, 'localElasticSearch.host') ||  _.get(server, 'host', 9200)
+      const port =  _.get(acapi.config, 'localElasticSearch.port') ||  _.get(server, 'port')
 
-      let url = (_.get(acapi.config, 'localElasticSearch.protocol') || _.get(server, 'protocol', 'https')) + '://' +(_.get(acapi.config, 'localElasticSearch.host') ||  _.get(server, 'host', 9200)) + ':' + (_.get(acapi.config, 'localElasticSearch.port') ||  _.get(server, 'port'))
+      let url =  `${protocol}://${host}:${port}`
       let esConfig = {
         node: {
           url: new URL(url),
@@ -134,8 +137,8 @@ module.exports = (acapi) => {
         acapi.aclog.serverInfo({
           instance,
           index: _.get(index, 'index'),
-          host: _.get(server, 'host'),
-          port: _.get(server, 'port'),
+          host,
+          port,
           cluster: _.get(esData, 'cluster_name'),
           clusterVersion: _.get(esData, 'version.number')
         })
