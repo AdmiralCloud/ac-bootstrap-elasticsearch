@@ -1,3 +1,13 @@
+<a name="0.1.4"></a>
+
+## [0.1.4](https://github.com/admiralcloud/ac-bootstrap-bull/compare/v0.1.3..v0.1.4) (2022-05-07 09:23:31)
+
+
+### Bug Fix
+
+* **App:** Fixed logging host and port | MP | [11b245a54dc3fdaec556700c8a13f5294884b72a](https://github.com/admiralcloud/ac-bootstrap-bull/commit/11b245a54dc3fdaec556700c8a13f5294884b72a)    
+Fixed logging host and port  
+Related issues: [/issues#undefined](https://github.com//issues/undefined)
 <a name="0.1.3"></a>
 
 ## [0.1.3](https://github.com/admiralcloud/ac-bootstrap-bull/compare/v0.1.2..v0.1.3) (2022-05-07 08:48:01)
