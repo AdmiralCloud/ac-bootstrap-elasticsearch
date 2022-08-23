@@ -1,3 +1,21 @@
+<a name="0.1.5"></a>
+
+## [0.1.5](https://github.com/admiralcloud/ac-bootstrap-bull/compare/v0.1.4..v0.1.5) (2022-08-23 13:54:35)
+
+
+### Bug Fix
+
+* **App:** Switch to Opensearch client | MP | [927d68ac87ad2eea4e3b97c21abeeb4aa3ddecca](https://github.com/admiralcloud/ac-bootstrap-bull/commit/927d68ac87ad2eea4e3b97c21abeeb4aa3ddecca)    
+Instead of using the outdated/fixed version of ES client we now use the official OpenSearch client  
+Related issues: [undefined/undefined#master](undefined/browse/master)
+### Chores
+
+* **App:** Add test release | MP | [d4459f50169147f978ce6f7a35c195fb0ca8c39c](https://github.com/admiralcloud/ac-bootstrap-bull/commit/d4459f50169147f978ce6f7a35c195fb0ca8c39c)    
+Add test release to Makefile  
+Related issues: [undefined/undefined#master](undefined/browse/master)
+* **App:** Ignore vscode settings | MP | [00a4287e6307cfe48c2a89db11f29924bb6c28e8](https://github.com/admiralcloud/ac-bootstrap-bull/commit/00a4287e6307cfe48c2a89db11f29924bb6c28e8)    
+Ignore vscode settings  
+Related issues: [undefined/undefined#master](undefined/browse/master)
 <a name="0.1.4"></a>
 
 ## [0.1.4](https://github.com/admiralcloud/ac-bootstrap-bull/compare/v0.1.3..v0.1.4) (2022-05-07 09:23:31)
