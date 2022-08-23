@@ -2,7 +2,7 @@ const async = require('async')
 const _ = require('lodash') 
 const { v4: uuidv4 } = require('uuid');
 
-const { Client, Connection } = require('@elastic/elasticsearch')
+const { Client, Connection } = require('@opensearch-project/opensearch')
 const AWS = require('aws-sdk')
 
 /**
