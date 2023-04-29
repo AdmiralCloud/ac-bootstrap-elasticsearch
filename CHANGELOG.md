@@ -1,3 +1,25 @@
+<a name="1.0.0"></a>
+ 
+# [1.0.0](https://github.com/admiralcloud/ac-bootstrap-bull/compare/v0.1.6..v1.0.0) (2023-04-29 20:32:20)
+
+
+### Feature
+
+* **App:** Use modern OpenSearch connector | MP | [b87c201de12930e4407979ee794c8af3b1a7369c](https://github.com/admiralcloud/ac-bootstrap-bull/commit/b87c201de12930e4407979ee794c8af3b1a7369c)    
+Use the modern OpenSearch connector as well as the modern AWS signer and use async/await  
+Related issues: [undefined/undefined#master](undefined/browse/master)
+### Chores
+
+* **App:** Updated eslint to v2022 | MP | [213d798bcad9ea9860c97ba8a79ad901c391d981](https://github.com/admiralcloud/ac-bootstrap-bull/commit/213d798bcad9ea9860c97ba8a79ad901c391d981)    
+Updated eslint to v2022  
+Related issues: [undefined/undefined#master](undefined/browse/master)
+### Chores
+
+* **App:** Updated packages | MP | [d19f81f88f0cf446b159d40d0510f3f6de1e120d](https://github.com/admiralcloud/ac-bootstrap-bull/commit/d19f81f88f0cf446b159d40d0510f3f6de1e120d)    
+Updated packages  
+Related issues: [undefined/undefined#master](undefined/browse/master)
+## BREAKING CHANGES
+* **App:** Version uses async/await
 <a name="0.1.6"></a>
 
 ## [0.1.6](https://github.com/admiralcloud/ac-bootstrap-bull/compare/v0.1.5..v0.1.6) (2023-01-28 18:03:12)
