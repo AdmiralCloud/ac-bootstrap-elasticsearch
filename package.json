@@ -1,6 +1,6 @@
 {
   "name": "ac-bootstrap-elasticsearch",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "OpenSearch (ElasticSearch) init for AC apps",
   "repository": "admiralcloud/ac-bootstrap-elasticsearch",
   "author": "Mark Poepping (www.admiralcloud.com)",

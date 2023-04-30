@@ -1,3 +1,13 @@
+<a name="1.0.1"></a>
+
+## [1.0.1](https://github.com/admiralcloud/ac-bootstrap-bull/compare/v1.0.0..v1.0.1) (2023-04-30 14:07:05)
+
+
+### Bug Fix
+
+* **App:** Add docCount to bootstrap  | MP | [37636dcb7f3df781717bffd2016709bba072d9ba](https://github.com/admiralcloud/ac-bootstrap-bull/commit/37636dcb7f3df781717bffd2016709bba072d9ba)    
+Show the number of docs in the index during bootstrap  
+Related issues: [/issues#undefined](https://github.com//issues/undefined)
 <a name="1.0.0"></a>
  
 # [1.0.0](https://github.com/admiralcloud/ac-bootstrap-bull/compare/v0.1.6..v1.0.0) (2023-04-29 20:32:20)
