@@ -65,6 +65,13 @@ module.exports = (acapi) => {
     acapi.aclog.serverInfo(serverInfo)
   }
 
+  const getIndexStats = async({ index }) => {
+    const response = await acapi.elasticSearch[index.instance].count({
+      index: index.index
+    })
+    return _.get(response, 'body.count')
+  }
+
   const init = async() => {
     acapi.aclog.headline({ headline: 'ELASTICSEARCH' })
     
@@ -101,6 +108,11 @@ module.exports = (acapi) => {
         // create an elasticsearch client for your Amazon ES
         await getClient({ instance, server, index })
       }
+      const docCount = await getIndexStats({ index })
+      acapi.aclog.listing({
+        field: 'DocCount',
+        value: docCount
+      })
     }
   }
 
