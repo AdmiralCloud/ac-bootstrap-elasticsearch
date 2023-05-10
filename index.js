@@ -1,10 +1,79 @@
 const _ = require('lodash') 
 const { v4: uuidv4 } = require('uuid')
 
-const { Client } = require('@opensearch-project/opensearch')
+const { Client, Transport, Connection } = require('@opensearch-project/opensearch')
 const { fromNodeProviderChain } = require('@aws-sdk/credential-providers')
 
-const createAwsOpensearchConnector = require('aws-opensearch-connector')
+const aws4 = require('aws4');
+const crypto = require('crypto');
+
+// origin: https://github.com/opensearch-project/opensearch-js/blob/main/lib/aws/AwsSigv4Signer.js
+// reduced to support only AWS SDKv3
+// enhanced to always check the credentials (so they can be rotated in the background)
+function AwsSigv4Signer(opts = {}) {
+  const credentialsState = {
+    credentials: null,
+  }
+  if (!opts.region) {
+    throw new Error('Region cannot be empty')
+  }
+  if (!opts.service) {
+    opts.service = 'es'
+  }
+
+  function buildSignedRequestObject(request = {}) {
+    request.service = opts.service
+    request.region = opts.region
+    request.headers = request.headers || {}
+    request.headers['host'] = request.hostname
+    const signed = aws4.sign(request, credentialsState.credentials)
+    signed.headers['x-amz-content-sha256'] = crypto
+      .createHash('sha256')
+      .update(request.body || '', 'utf8')
+      .digest('hex')
+    return signed
+  }
+
+  class AwsSigv4SignerConnection extends Connection {
+    buildRequestObject(params) {
+      const request = super.buildRequestObject(params)
+      return buildSignedRequestObject(request)
+    }
+  }
+
+  class AwsSigv4SignerTransport extends Transport {
+    request(params, options = {}, callback = undefined) {
+      // options is optional so if options is a function, it's the callback.
+      if (typeof options === 'function') {
+        callback = options
+        options = {}
+      }
+
+      // For AWS SDK V3 or when the client has not acquired credentials yet.
+      if (typeof callback === 'undefined') {
+        return opts.getCredentials().then((credentials) => {
+          credentialsState.credentials = credentials
+          return super.request(params, options)
+        })
+      } 
+      else {
+        opts
+          .getCredentials()
+          .then((credentials) => {
+            credentialsState.credentials = credentials
+            super.request(params, options, callback)
+          })
+          .catch(callback)
+      }
+    }
+  }
+
+  return {
+    Transport: AwsSigv4SignerTransport,
+    Connection: AwsSigv4SignerConnection,
+    buildSignedRequestObject,
+  }
+}
 
 /**
  * https://docs.aws.amazon.com/opensearch-service/latest/developerguide/request-signing.html#request-signing-node
@@ -15,13 +84,12 @@ const createAwsOpensearchConnector = require('aws-opensearch-connector')
 
 module.exports = (acapi) => {
 
-  const getClient = async ({ instance, server, index, region = 'eu-central-1', profile = process.env['profile'] }) => {
+  const getClient = async ({ instance, server, index, region = 'eu-central-1', profile = process.env['profile'], debug = false }) => {
     const protocol = _.get(acapi.config, 'localElasticSearch.protocol') || _.get(server, 'protocol', 'https')
     const host = _.get(acapi.config, 'localElasticSearch.host') ||  _.get(server, 'host', 9200)
     const port =  _.get(acapi.config, 'localElasticSearch.port') ||  _.get(server, 'port')
     const url =  `${protocol}://${host}:${port}`
 
-    const credentials = await fromNodeProviderChain({ profile, ignoreCache: true })()
     const esConfig = {
       node: {
         url: new URL(url),
@@ -35,9 +103,17 @@ module.exports = (acapi) => {
     }
 
     if (!acapi.config.localElasticSearch && _.get(server, 'awsCluster')) {
-      const osConnector = createAwsOpensearchConnector({
-        credentials, 
-        region
+      const osConnector = AwsSigv4Signer({
+        service: 'es',
+        region,
+        getCredentials: async() => {
+          const credentialsProvider = fromNodeProviderChain({ profile, ignoreCache: true })
+          if (debug) {
+            const credentials = await credentialsProvider()
+            console.log('ac-bootstrap-elasticsearch | AWS session | AccessKey %s', credentials?.accessKeyId)
+          }
+          return credentialsProvider();
+        }
       })
       _.merge(esConfig, osConnector)
     }
@@ -106,7 +182,7 @@ module.exports = (acapi) => {
       }
       else {
         // create an elasticsearch client for your Amazon ES
-        await getClient({ instance, server, index })
+        await getClient({ instance, server, index, debug: _.get(index, 'debug') })
       }
       const docCount = await getIndexStats({ index })
       acapi.aclog.listing({
