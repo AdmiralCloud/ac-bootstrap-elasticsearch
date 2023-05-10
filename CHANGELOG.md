@@ -1,3 +1,18 @@
+<a name="1.0.2"></a>
+
+## [1.0.2](https://github.com/admiralcloud/ac-bootstrap-bull/compare/v1.0.1..v1.0.2) (2023-05-10 19:43:08)
+
+
+### Bug Fix
+
+* **App:** Use our own AWS signing mechanism | MP | [5725326cd56575e1f0aa77825b6d2e032789e1a3](https://github.com/admiralcloud/ac-bootstrap-bull/commit/5725326cd56575e1f0aa77825b6d2e032789e1a3)    
+Make sure to always use fresh credentials to avoid expiration of role session credentials  
+Related issues: [/issues#undefined](https://github.com//issues/undefined)
+### Chores
+
+* **App:** Updated packages | MP | [d1d83cd76573b4fc82a53c3fc6780d4abeea865f](https://github.com/admiralcloud/ac-bootstrap-bull/commit/d1d83cd76573b4fc82a53c3fc6780d4abeea865f)    
+Updated packages  
+Related issues: [undefined/undefined#master](undefined/browse/master)
 <a name="1.0.1"></a>
 
 ## [1.0.1](https://github.com/admiralcloud/ac-bootstrap-bull/compare/v1.0.0..v1.0.1) (2023-04-30 14:07:05)
