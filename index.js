@@ -2,14 +2,37 @@ const _ = require('lodash')
 const { v4: uuidv4 } = require('uuid')
 
 const { Client, Transport, Connection } = require('@opensearch-project/opensearch')
-const { fromNodeProviderChain } = require('@aws-sdk/credential-providers')
 
 const aws4 = require('aws4');
 const crypto = require('crypto');
 
+const getAwsSDKCredentialsProvider = async () => {
+  // First try V3
+  try {
+    const awsV3 = await import('@aws-sdk/credential-provider-node');
+    if (typeof awsV3.defaultProvider === 'function') {
+      return awsV3.defaultProvider();
+    }
+  }
+ catch (err) {
+    throw new Error('Unable to find a valid AWS SDK, please provide a valid getCredentials function to AwsSigv4Signer options.')
+  }
+}
+
+const awsDefaultCredentialsProvider = () =>
+  new Promise((resolve, reject) => {
+    getAwsSDKCredentialsProvider()
+      .then((provider) => {
+        provider().then(resolve).catch(reject);
+      })
+      .catch((err) => {
+        reject(err);
+      });
+  });
+
 // origin: https://github.com/opensearch-project/opensearch-js/blob/main/lib/aws/AwsSigv4Signer.js
 // reduced to support only AWS SDKv3
-// enhanced to always check the credentials (so they can be rotated in the background)
+// use built-in AWS SDK session handling to make sure valid keys are used
 function AwsSigv4Signer(opts = {}) {
   const credentialsState = {
     credentials: null,
@@ -19,6 +42,9 @@ function AwsSigv4Signer(opts = {}) {
   }
   if (!opts.service) {
     opts.service = 'es'
+  }
+  if (typeof opts.getCredentials !== 'function') {
+    opts.getCredentials = awsDefaultCredentialsProvider;
   }
 
   function buildSignedRequestObject(request = {}) {
@@ -49,22 +75,60 @@ function AwsSigv4Signer(opts = {}) {
         options = {}
       }
 
+      const currentCredentials = credentialsState.credentials;
+      let expired = false;
+      if (!currentCredentials) {
+        // Credentials haven't been acquired yet.
+        expired = true;
+      }
+      // AWS SDK V3, Credentials.expiration is a Date object
+      else if (currentCredentials.expiration && currentCredentials.expiration < new Date()) {
+        expired = true;
+      }
+
+      if (!expired) {
+        if (typeof callback === 'undefined') {
+          return super.request(params, options);
+        }
+        super.request(params, options, callback);
+        return;
+      }
+
+      // In AWS SDK V2 Credentials.refreshPromise should be available.
+      if (currentCredentials && typeof currentCredentials.refreshPromise === 'function') {
+        if (typeof callback === 'undefined') {
+          return currentCredentials.refreshPromise().then(() => {
+            return super.request(params, options);
+          });
+        }
+ else {
+          currentCredentials
+            .refreshPromise()
+            .then(() => {
+              super.request(params, options, callback);
+            })
+            .catch(callback);
+          return;
+        }
+      }
+
       // For AWS SDK V3 or when the client has not acquired credentials yet.
       if (typeof callback === 'undefined') {
         return opts.getCredentials().then((credentials) => {
-          credentialsState.credentials = credentials
-          return super.request(params, options)
-        })
-      } 
-      else {
+          credentialsState.credentials = credentials;
+          return super.request(params, options);
+        });
+      }
+ else {
         opts
           .getCredentials()
           .then((credentials) => {
-            credentialsState.credentials = credentials
-            super.request(params, options, callback)
+            credentialsState.credentials = credentials;
+            super.request(params, options, callback);
           })
-          .catch(callback)
+          .catch(callback);
       }
+      
     }
   }
 
@@ -84,7 +148,7 @@ function AwsSigv4Signer(opts = {}) {
 
 module.exports = (acapi) => {
 
-  const getClient = async ({ instance, server, index, region = 'eu-central-1', profile = process.env['profile'], debug = false }) => {
+  const getClient = async ({ instance, server, index, region = 'eu-central-1' }) => {
     const protocol = _.get(acapi.config, 'localElasticSearch.protocol') || _.get(server, 'protocol', 'https')
     const host = _.get(acapi.config, 'localElasticSearch.host') ||  _.get(server, 'host', 9200)
     const port =  _.get(acapi.config, 'localElasticSearch.port') ||  _.get(server, 'port')
@@ -105,15 +169,7 @@ module.exports = (acapi) => {
     if (!acapi.config.localElasticSearch && _.get(server, 'awsCluster')) {
       const osConnector = AwsSigv4Signer({
         service: 'es',
-        region,
-        getCredentials: async() => {
-          const credentialsProvider = fromNodeProviderChain({ profile, ignoreCache: true })
-          if (debug) {
-            const credentials = await credentialsProvider()
-            console.log('ac-bootstrap-elasticsearch | AWS session | AccessKey %s', credentials?.accessKeyId)
-          }
-          return credentialsProvider();
-        }
+        region
       })
       _.merge(esConfig, osConnector)
     }
