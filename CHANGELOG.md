@@ -1,3 +1,13 @@
+<a name="1.0.3"></a>
+
+## [1.0.3](https://github.com/admiralcloud/ac-bootstrap-bull/compare/v1.0.2..v1.0.3) (2023-05-12 16:23:33)
+
+
+### Bug Fix
+
+* **App:** Use AWS_PROFILE instead of profile | MP | [8497a9300e0c0b9085c634ee55c3635e79e07d3d](https://github.com/admiralcloud/ac-bootstrap-bull/commit/8497a9300e0c0b9085c634ee55c3635e79e07d3d)    
+Use AWS_PROFILE and the built-in session management from AWS SDK  
+Related issues: [/issues#undefined](https://github.com//issues/undefined)
 <a name="1.0.2"></a>
 
 ## [1.0.2](https://github.com/admiralcloud/ac-bootstrap-bull/compare/v1.0.1..v1.0.2) (2023-05-10 19:43:08)
