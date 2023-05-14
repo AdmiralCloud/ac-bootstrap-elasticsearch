@@ -1,3 +1,13 @@
+<a name="1.0.4"></a>
+
+## [1.0.4](https://github.com/admiralcloud/ac-bootstrap-bull/compare/v1.0.3..v1.0.4) (2023-05-14 17:41:28)
+
+
+### Bug Fix
+
+* **App:** Use default AWS signer | MP | [d0015c33adb659514ca7de48dce8402542d929d9](https://github.com/admiralcloud/ac-bootstrap-bull/commit/d0015c33adb659514ca7de48dce8402542d929d9)    
+Use default AWS signer  
+Related issues: [/issues#undefined](https://github.com//issues/undefined)
 <a name="1.0.3"></a>
 
 ## [1.0.3](https://github.com/admiralcloud/ac-bootstrap-bull/compare/v1.0.2..v1.0.3) (2023-05-12 16:23:33)
