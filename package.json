@@ -6,7 +6,6 @@
   "author": "Mark Poepping (www.admiralcloud.com)",
   "license": "MIT",
   "dependencies": {
-    "@aws-sdk/credential-provider-node": "^3.332.0",
     "@opensearch-project/opensearch": "^2.2.1",
     "lodash": "^4.17.21",
     "uuid": "^9.0.0"
