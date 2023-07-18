@@ -106,11 +106,18 @@ module.exports = (acapi) => {
         // create an elasticsearch client for your Amazon ES
         await getClient({ instance, server, index, debug: _.get(index, 'debug') })
       }
-      const docCount = await getIndexStats({ index })
-      acapi.aclog.listing({
-        field: 'DocCount',
-        value: docCount
-      })
+      try {
+        const docCount = await getIndexStats({ index })
+        acapi.aclog.listing({
+          field: 'DocCount',
+          value: docCount
+        })
+      } catch (err) {
+        acapi.aclog.listing({
+          field: 'DocCount',
+          value: 0
+        })
+      }
     }
   }
 
