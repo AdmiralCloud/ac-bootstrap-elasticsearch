@@ -1,3 +1,21 @@
+<a name="1.0.5"></a>
+
+## [1.0.5](https://github.com/admiralcloud/ac-bootstrap-bull/compare/v1.0.4..v1.0.5) (2023-07-20 05:41:22)
+
+
+### Bug Fix
+
+* **App:** Adjust message in case of error | MP | [6a8e425a8776dc03a21a8f17ab76d3fe054bd351](https://github.com/admiralcloud/ac-bootstrap-bull/commit/6a8e425a8776dc03a21a8f17ab76d3fe054bd351)    
+Return an error instead of 0 so it is clear that there is a potential problem  
+Related issues: [/issues#undefined](https://github.com//issues/undefined)
+* **App:** Fix No-Index crash of init() | JE | [f3ae4040f58edbd001556f7c4603bb613a0c5145](https://github.com/admiralcloud/ac-bootstrap-bull/commit/f3ae4040f58edbd001556f7c4603bb613a0c5145)    
+init() would crash if some indices would not exist yet. This happens in testing.  
+Related issues: [undefined/undefined#AC-4644](undefined/browse/AC-4644)
+### Chores
+
+* **App:** Updated packages | MP | [774c999036dcb9c9eb259afe08b6d5ba4a5ba3a2](https://github.com/admiralcloud/ac-bootstrap-bull/commit/774c999036dcb9c9eb259afe08b6d5ba4a5ba3a2)    
+Updated packages  
+Related issues: [/issues#undefined](https://github.com//issues/undefined)
 <a name="1.0.4"></a>
 
 ## [1.0.4](https://github.com/admiralcloud/ac-bootstrap-bull/compare/v1.0.3..v1.0.4) (2023-05-14 17:41:28)
