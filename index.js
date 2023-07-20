@@ -112,10 +112,11 @@ module.exports = (acapi) => {
           field: 'DocCount',
           value: docCount
         })
-      } catch (err) {
+      } 
+      catch (err) {
         acapi.aclog.listing({
           field: 'DocCount',
-          value: 0
+          value: _.get(err, 'message', 'Error')
         })
       }
     }
