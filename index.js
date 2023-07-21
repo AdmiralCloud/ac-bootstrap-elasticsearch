@@ -1,8 +1,9 @@
 const _ = require('lodash') 
 const { v4: uuidv4 } = require('uuid')
 
+const { defaultProvider } = require('@aws-sdk/credential-provider-node')
 const { Client } = require('@opensearch-project/opensearch')
-const { AwsSigv4Signer } = require('@opensearch-project/opensearch/aws');
+const { AwsSigv4Signer } = require('@opensearch-project/opensearch/aws')
 
 
 /**
@@ -35,7 +36,13 @@ module.exports = (acapi) => {
     if (!acapi.config.localElasticSearch && _.get(server, 'awsCluster')) {
       const osConnector = AwsSigv4Signer({
         service: 'es',
-        region
+        region,
+        // Example with AWS SDK V3:
+        getCredentials: () => {
+          // Any other method to acquire a new Credentials object can be used.
+          const credentialsProvider = defaultProvider()
+          return credentialsProvider()
+        },
       })
       _.merge(esConfig, osConnector)
     }
