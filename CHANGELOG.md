@@ -1,3 +1,13 @@
+<a name="1.0.6"></a>
+
+## [1.0.6](https://github.com/admiralcloud/ac-bootstrap-bull/compare/v1.0.5..v1.0.6) (2023-07-21 16:11:53)
+
+
+### Bug Fix
+
+* **App:** Fixed missing AWS credential provider | MP | [3e61db181994f0c68ee4bfc4c473c28afdd7e41e](https://github.com/admiralcloud/ac-bootstrap-bull/commit/3e61db181994f0c68ee4bfc4c473c28afdd7e41e)    
+When using with AWS, a valid credentialProvider is required.  
+Related issues: [/issues#undefined](https://github.com//issues/undefined)
 <a name="1.0.5"></a>
 
 ## [1.0.5](https://github.com/admiralcloud/ac-bootstrap-bull/compare/v1.0.4..v1.0.5) (2023-07-20 05:41:22)
