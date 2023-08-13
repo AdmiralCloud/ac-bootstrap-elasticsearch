@@ -5,6 +5,10 @@ const { defaultProvider } = require('@aws-sdk/credential-provider-node')
 const { Client } = require('@opensearch-project/opensearch')
 const { AwsSigv4Signer } = require('@opensearch-project/opensearch/aws')
 
+const https = require('https');
+const keepAliveAgent = new https.Agent({
+  keepAlive: true
+});
 
 /**
  * https://docs.aws.amazon.com/opensearch-service/latest/developerguide/request-signing.html#request-signing-node
@@ -15,7 +19,7 @@ const { AwsSigv4Signer } = require('@opensearch-project/opensearch/aws')
 
 module.exports = (acapi) => {
 
-  const getClient = async ({ instance, server, index, region = 'eu-central-1' }) => {
+  const getClient = async ({ instance, server, index, region = 'eu-central-1', keepAlive = true }) => {
     const protocol = _.get(acapi.config, 'localElasticSearch.protocol') || _.get(server, 'protocol', 'https')
     const host = _.get(acapi.config, 'localElasticSearch.host') ||  _.get(server, 'host', 9200)
     const port =  _.get(acapi.config, 'localElasticSearch.port') ||  _.get(server, 'port')
@@ -32,6 +36,7 @@ module.exports = (acapi) => {
       auth: _.get(server, 'auth'),
       requestTimeout: acapi.config.elasticSearch.timeout,
     }
+    if (keepAlive) esConfig.agent = keepAliveAgent
 
     if (!acapi.config.localElasticSearch && _.get(server, 'awsCluster')) {
       const osConnector = AwsSigv4Signer({
