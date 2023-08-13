@@ -1,3 +1,18 @@
+<a name="1.0.7"></a>
+
+## [1.0.7](https://github.com/admiralcloud/ac-bootstrap-bull/compare/v1.0.6..v1.0.7) (2023-08-13 18:56:30)
+
+
+### Bug Fix
+
+* **App:** Add keepAlive option | MP | [41aaf79afbd266dbffdb3d7808eb653bc35131b6](https://github.com/admiralcloud/ac-bootstrap-bull/commit/41aaf79afbd266dbffdb3d7808eb653bc35131b6)    
+keepAlive is now active by default (https).  
+Related issues: [undefined/undefined#master](undefined/browse/master)
+### Chores
+
+* **App:** Updated packages | MP | [d921b1d0f692a35aadc2b45cb72b4a84fccf8753](https://github.com/admiralcloud/ac-bootstrap-bull/commit/d921b1d0f692a35aadc2b45cb72b4a84fccf8753)    
+Updated packages  
+Related issues: [/issues#undefined](https://github.com//issues/undefined)
 <a name="1.0.6"></a>
 
 ## [1.0.6](https://github.com/admiralcloud/ac-bootstrap-bull/compare/v1.0.5..v1.0.6) (2023-07-21 16:11:53)
