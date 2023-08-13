@@ -6,7 +6,7 @@
   "author": "Mark Poepping (www.admiralcloud.com)",
   "license": "MIT",
   "dependencies": {
-    "@aws-sdk/credential-provider-node": "^3.370.0",
+    "@aws-sdk/credential-provider-node": "^3.388.0",
     "@opensearch-project/opensearch": "^2.3.1",
     "lodash": "^4.17.21",
     "uuid": "^9.0.0"
@@ -14,6 +14,6 @@
   "devDependencies": {
     "ac-jenkins": "git+ssh://git@ac-jenkins.github.com:admiralcloud/ac-jenkins#v1.2.1",
     "ac-semantic-release": "^0.4.2",
-    "eslint": "^8.45.0"
+    "eslint": "^8.47.0"
   }
 }
