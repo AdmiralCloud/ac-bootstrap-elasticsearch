@@ -1,3 +1,13 @@
+<a name="1.0.9"></a>
+
+## [1.0.9](https://github.com/admiralcloud/ac-bootstrap-bull/compare/v1.0.8..v1.0.9) (2024-01-12 19:57:30)
+
+
+### Bug Fix
+
+* **App:** Make sure requestTimeout is not undefined | MP | [3c42ef563b95a5651e490f04aa51d7857144dd06](https://github.com/admiralcloud/ac-bootstrap-bull/commit/3c42ef563b95a5651e490f04aa51d7857144dd06)    
+If undefined, refreshing credentials won't work.  
+Related issues: [undefined/undefined#master](undefined/browse/master)
 <a name="1.0.8"></a>
 
 ## [1.0.8](https://github.com/admiralcloud/ac-bootstrap-bull/compare/v1.0.7..v1.0.8) (2024-01-12 12:30:24)
