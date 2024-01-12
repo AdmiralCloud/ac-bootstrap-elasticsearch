@@ -34,7 +34,7 @@ module.exports = (acapi) => {
         }  
       },
       auth: _.get(server, 'auth'),
-      requestTimeout: acapi.config.elasticSearch.timeout,
+      requestTimeout: _.get(acapi.config, 'elasticSearch.timeout', 30000),
     }
     if (keepAlive) esConfig.agent = keepAliveAgent
 
