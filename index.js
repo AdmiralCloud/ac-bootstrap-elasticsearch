@@ -69,7 +69,7 @@ module.exports = (acapi) => {
       await acapi.elasticSearch[instance].indices.exists({ index: _.get(index, 'index') })
     }
     catch(e) {
-      console.log(84, e)
+      console.error(84, e)
     }
 
     acapi.aclog.serverInfo(serverInfo)
