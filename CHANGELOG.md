@@ -1,3 +1,15 @@
+<a name="2.0.0"></a>
+ 
+# [2.0.0](https://github.com/admiralcloud/ac-bootstrap-bull/compare/v1.0.14..v2.0.0) (2025-01-16 16:35:07)
+
+
+### Bug Fix
+
+* **App:** Updated packages | MP | [ece2146e0d81f600f474322599751e8a8b57b76e](https://github.com/admiralcloud/ac-bootstrap-bull/commit/ece2146e0d81f600f474322599751e8a8b57b76e)    
+Updated packages  
+Related issues: [undefined/undefined#master](undefined/browse/master)
+## BREAKING CHANGES
+* **App:** opensearch.js - Support for snake_cased API function aliases have been deprecated to conform to JavaScript naming conventions.
 <a name="1.0.14"></a>
 
 ## [1.0.14](https://github.com/admiralcloud/ac-bootstrap-bull/compare/v1.0.13..v1.0.14) (2024-12-01 17:04:44)
