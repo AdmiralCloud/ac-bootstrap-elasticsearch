@@ -19,6 +19,7 @@ const keepAliveAgent = new https.Agent({
 
 module.exports = (acapi) => {
 
+
   const getClient = async ({ instance, server, index, region = 'eu-central-1', keepAlive = true }) => {
     const protocol = _.get(acapi.config, 'localElasticSearch.protocol') || _.get(server, 'protocol', 'https')
     const host = _.get(acapi.config, 'localElasticSearch.host') ||  _.get(server, 'host', 9200)
@@ -72,7 +73,9 @@ module.exports = (acapi) => {
       console.error(84, e)
     }
 
-    acapi.aclog.serverInfo(serverInfo)
+    serverInfo.collectOnly = true
+    const logCollector = acapi.aclog.serverInfo(serverInfo)
+    return logCollector
   }
 
   const getIndexStats = async({ index }) => {
@@ -83,7 +86,7 @@ module.exports = (acapi) => {
   }
 
   const init = async() => {
-    acapi.aclog.headline({ headline: 'ELASTICSEARCH' })
+    let logCollector = []
     
     // init multiple instances for different purposes
     acapi.elasticSearch = {}
@@ -109,29 +112,35 @@ module.exports = (acapi) => {
 
       // check if instance is already created - do not instanciate multiple times, we can re-use it
       if (_.has(acapi.elasticSearch, instance)) {
-        acapi.aclog.serverInfo({
+        logCollector = logCollector.concat(acapi.aclog.serverInfo({
           instance,
-          index: _.get(index, 'index')
-        })
+          index: _.get(index, 'index'),
+          collectOnly: true
+        }))
       }
       else {
         // create an elasticsearch client for your Amazon ES
-        await getClient({ instance, server, index, debug: _.get(index, 'debug') })
+        const infoLogs = await getClient({ instance, server, index, debug: _.get(index, 'debug') })
+        logCollector = logCollector.concat(infoLogs)
       }
       try {
         const docCount = await getIndexStats({ index })
-        acapi.aclog.listing({
+        logCollector.push({
           field: 'DocCount',
           value: docCount
         })
       } 
       catch (err) {
-        acapi.aclog.listing({
+        logCollector.push({
           field: 'DocCount',
           value: _.get(err, 'message', 'Error')
         })
       }
+      logCollector.push({
+        line: true
+      })
     }
+    return logCollector
   }
 
   const checkForSnapshot = async({ instance }) => {
@@ -142,6 +151,7 @@ module.exports = (acapi) => {
 
   const prepareForTest = async({ instance, createMapping }) => {
     const index = _.find(acapi.config.elasticSearch.indices, { model: instance })
+    const logCollector = []
 
     // reset ES in for tests
     // check for snapshot and wait (if not localDevelopment) - otherwise tests will fail
@@ -162,7 +172,7 @@ module.exports = (acapi) => {
       index: `${index.index}*`,
       ignore_unavailable: true
     })
-    acapi.aclog.listing({
+    logCollector.push({
       field: 'Deleted index',
       value: _.get(response, 'body.acknowledged')
     })
@@ -170,7 +180,7 @@ module.exports = (acapi) => {
     // only create mapping if the function is async
     if (_.isFunction(createMapping)) {
       let uuidIndex = `${index.index}_${uuidv4()}`
-      acapi.aclog.listing({
+      logCollector.push({
         field: 'Creating',
         value: uuidIndex
       })
@@ -184,15 +194,16 @@ module.exports = (acapi) => {
           actions
         }
       })
-      acapi.aclog.listing({
+      logCollector.push({
         field: 'Updated alias',
         value: index.index
       })
-      acapi.aclog.listing({
+      logCollector.push({
         field: 'Index ready',
         value: _.get(response, 'body.acknowledged')
       })
     }
+    return logCollector
   }
 
   return {
