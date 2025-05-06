@@ -1,4 +1,18 @@
 
+## [2.0.3](https://github.com/admiralcloud/ac-bootstrap-bull/compare/v2.0.2..v2.0.3) (2025-05-06 18:04:16)
+
+
+### Bug Fix
+
+* **App:** Return logs instead of logging to stdout | MP | [12a63d87e8cd3f314bbf617861eae3b4416f38ee](https://github.com/admiralcloud/ac-bootstrap-bull/commit/12a63d87e8cd3f314bbf617861eae3b4416f38ee)    
+To improve parallel processing during bootstrap we return the logs instead of logging them directly to stdout  
+Related issues:
+### Chores
+
+* **App:** Updated packages | MP | [eb3cab74f4ddb45c772097a3db1440431a45e881](https://github.com/admiralcloud/ac-bootstrap-bull/commit/eb3cab74f4ddb45c772097a3db1440431a45e881)    
+Updated packages  
+Related issues:
+
 ## [2.0.2](https://github.com/admiralcloud/ac-bootstrap-bull/compare/v2.0.1..v2.0.2) (2025-03-30 18:23:58)
 
 
