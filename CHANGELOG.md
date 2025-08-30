@@ -1,4 +1,13 @@
 
+## [2.0.6](https://github.com/admiralcloud/ac-bootstrap-bull/compare/v2.0.5..v2.0.6) (2025-08-30 06:33:34)
+
+
+### Bug Fix
+
+* **App:** Package updates | MP | [05f553ab9ecb441836c7963a718589b7fd4552f4](https://github.com/admiralcloud/ac-bootstrap-bull/commit/05f553ab9ecb441836c7963a718589b7fd4552f4)    
+Package updates  
+Related issues:
+
 ## [2.0.5](https://github.com/admiralcloud/ac-bootstrap-bull/compare/v2.0.4..v2.0.5) (2025-08-15 14:08:52)
 
 
