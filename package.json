@@ -6,15 +6,15 @@
   "author": "Mark Poepping (www.admiralcloud.com)",
   "license": "MIT",
   "dependencies": {
-    "@aws-sdk/credential-provider-node": "^3.879.0",
+    "@aws-sdk/credential-provider-node": "^3.891.0",
     "@opensearch-project/opensearch": "^3.5.1",
     "lodash": "^4.17.21",
     "uuid": "^11.1.0"
   },
   "devDependencies": {
     "ac-jenkins": "git+ssh://git@ac-jenkins.github.com/admiralcloud/ac-jenkins#v1.2.7",
-    "ac-semantic-release": "^0.4.7",
-    "eslint": "^9.34.0"
+    "ac-semantic-release": "^0.4.8",
+    "eslint": "^9.35.0"
   },
   "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
 }
