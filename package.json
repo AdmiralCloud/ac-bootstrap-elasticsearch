@@ -2,7 +2,10 @@
   "name": "ac-bootstrap-elasticsearch",
   "version": "2.0.8",
   "description": "OpenSearch (ElasticSearch) init for AC apps",
-  "repository": "admiralcloud/ac-bootstrap-elasticsearch",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/admiralcloud/ac-bootstrap-elasticsearch.git"
+  },
   "author": "Mark Poepping (www.admiralcloud.com)",
   "license": "MIT",
   "dependencies": {
