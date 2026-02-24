@@ -37,7 +37,7 @@ module.exports = (acapi) => {
       auth: _.get(server, 'auth'),
       requestTimeout: _.get(acapi.config, 'elasticSearch.timeout', 30000),
     }
-    if (keepAlive) esConfig.agent = keepAliveAgent
+    if (keepAlive) { esConfig.agent = keepAliveAgent }
 
     if (!acapi.config.localElasticSearch && _.get(server, 'awsCluster')) {
       const osConnector = AwsSigv4Signer({
@@ -95,18 +95,18 @@ module.exports = (acapi) => {
     // filter out indices with omitInTest = true
     if (acapi.config.environment === 'test') {
       indices = _.filter(indices, index => {
-        if (!index.omitInTest) return index
+        if (!index.omitInTest) { return index }
       })
     }
   
     for (const index of indices) {
-      if (acapi.config.environment === 'test' && _.get(index, 'omitInTest')) return 
-      let instance = _.get(index, 'instance')
-      let server = _.find(acapi.config.elasticSearch.servers, { server: _.get(index, 'server') })
-      if (!server) throw new Error({ message: 'serverConfigurationMissingForES' })
+      if (acapi.config.environment === 'test' && _.get(index, 'omitInTest')) { return } 
+      const instance = _.get(index, 'instance')
+      const server = _.find(acapi.config.elasticSearch.servers, { server: _.get(index, 'server') })
+      if (!server) { throw new Error({ message: 'serverConfigurationMissingForES' }) }
 
       // update config with environment if not global
-      let pos = _.findIndex(indices, { model: index.model })
+      const pos = _.findIndex(indices, { model: index.model })
       index.index = (!index.global ? acapi.config.environment + '_' : '') + (process.env.NODE_TEST_ORIGIN ? process.env.NODE_TEST_ORIGIN + '_' : '' ) + (index.indexInfix || index.model)
       indices.splice(pos, 1, index)
 
@@ -144,7 +144,7 @@ module.exports = (acapi) => {
   }
 
   const checkForSnapshot = async({ instance }) => {
-    let response = await acapi.elasticSearch[instance].snapshot.status()
+    const response = await acapi.elasticSearch[instance].snapshot.status()
     return _.get(response, 'body.error.root_cause[0].type') 
   }
   
@@ -179,14 +179,14 @@ module.exports = (acapi) => {
 
     // only create mapping if the function is async
     if (_.isFunction(createMapping)) {
-      let uuidIndex = `${index.index}_${uuidv4()}`
+      const uuidIndex = `${index.index}_${uuidv4()}`
       logCollector.push({
         field: 'Creating',
         value: uuidIndex
       })
       await createMapping({ index: uuidIndex, model: index.model })
       // create alias
-      let actions = [{
+      const actions = [{
         add: { index: uuidIndex, alias: index.index }
       }]
       const response = await acapi.elasticSearch[instance].indices.updateAliases({
