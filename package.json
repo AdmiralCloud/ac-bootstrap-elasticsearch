@@ -1,6 +1,6 @@
 {
   "name": "ac-bootstrap-elasticsearch",
-  "version": "2.0.9",
+  "version": "2.0.10",
   "description": "OpenSearch (ElasticSearch) init for AC apps",
   "repository": {
     "type": "git",
