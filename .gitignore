@@ -27,3 +27,4 @@ report.xml
 ########################
 .jenkins.conf
 test.js
+.claude
