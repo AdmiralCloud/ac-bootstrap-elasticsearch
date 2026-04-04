@@ -2,6 +2,8 @@
 
 Initializes OpenSearch/ElasticSearch client instances and attaches them to `acapi.elasticSearch` for use across an AC application.
 
+[![Node.js CI](https://github.com/AdmiralCloud/ac-bootstrap-elasticsearch/actions/workflows/ci.yml/badge.svg)](https://github.com/AdmiralCloud/ac-bootstrap-elasticsearch/actions/workflows/ci.yml) [![CodeQL](https://github.com/AdmiralCloud/ac-bootstrap-elasticsearch/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/AdmiralCloud/ac-bootstrap-elasticsearch/actions/workflows/github-code-scanning/codeql)
+
 ## Installation
 
 ```bash
