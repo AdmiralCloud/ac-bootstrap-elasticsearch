@@ -1,5 +1,5 @@
 const _ = require('lodash') 
-const { v4: uuidv4 } = require('uuid')
+const { randomUUID } = require('crypto')
 
 const { defaultProvider } = require('@aws-sdk/credential-provider-node')
 const { Client } = require('@opensearch-project/opensearch')
@@ -179,7 +179,7 @@ module.exports = (acapi) => {
 
     // only create mapping if the function is async
     if (_.isFunction(createMapping)) {
-      const uuidIndex = `${index.index}_${uuidv4()}`
+      const uuidIndex = `${index.index}_${randomUUID()}`
       logCollector.push({
         field: 'Creating',
         value: uuidIndex
