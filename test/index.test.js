@@ -93,6 +93,13 @@ describe('ac-bootstrap-elasticsearch', () => {
       assert.deepEqual(result, [])
     })
 
+    it('returns an empty log collector when indices is undefined', async () => {
+      delete acapi.config.elasticSearch.indices
+      const { init } = moduleFactory(acapi)
+      const result = await init()
+      assert.deepEqual(result, [])
+    })
+
     it('filters out indices with omitInTest=true in test environment', async () => {
       acapi.config.elasticSearch.servers = [{ server: 'main', host: 'localhost', port: 9200 }]
       acapi.config.elasticSearch.indices = [
@@ -206,6 +213,104 @@ describe('ac-bootstrap-elasticsearch', () => {
       const entry = result.find(e => e.field === 'DocCount')
       assert.ok(entry)
       assert.equal(entry.value, 'connection refused')
+    })
+
+    it('falls back to "Error" when DocCount error has no message property', async () => {
+      mockClient.count.rejects({})
+      acapi.config.elasticSearch.servers = [{ server: 'main', host: 'localhost', port: 9200 }]
+      acapi.config.elasticSearch.indices = [
+        { model: 'docs', server: 'main', instance: 'main' }
+      ]
+
+      const { init } = moduleFactory(acapi)
+      const result = await init()
+
+      const entry = result.find(e => e.field === 'DocCount')
+      assert.ok(entry)
+      assert.equal(entry.value, 'Error')
+    })
+
+    it('sets rejectUnauthorized to false in non-production environments', async () => {
+      acapi.config.elasticSearch.servers = [{ server: 'main', host: 'localhost', port: 9200 }]
+      acapi.config.elasticSearch.indices = [
+        { model: 'docs', server: 'main', instance: 'main' }
+      ]
+
+      const { init } = moduleFactory(acapi)
+      await init()
+
+      const esConfig = MockClientConstructor.firstCall.args[0]
+      assert.equal(esConfig.node.ssl.rejectUnauthorized, false)
+    })
+
+    it('sets rejectUnauthorized to true in production', async () => {
+      acapi.config.environment = 'production'
+      acapi.config.elasticSearch.servers = [{ server: 'main', host: 'localhost', port: 9200 }]
+      acapi.config.elasticSearch.indices = [
+        { model: 'docs', server: 'main', instance: 'main' }
+      ]
+
+      const { init } = moduleFactory(acapi)
+      await init()
+
+      const esConfig = MockClientConstructor.firstCall.args[0]
+      assert.equal(esConfig.node.ssl.rejectUnauthorized, true)
+    })
+
+    it('uses AwsSigv4Signer when server has awsCluster=true', async () => {
+      const mockCredentials = { accessKeyId: 'test', secretAccessKey: 'test' }
+      const credentialsProvider = sinon.stub().resolves(mockCredentials)
+      const defaultProviderStub = sinon.stub().returns(credentialsProvider)
+      const AwsSigv4SignerStub = sinon.stub().callsFake(({ getCredentials }) => {
+        getCredentials()
+        return { connector: 'aws' }
+      })
+      const awsModuleFactory = loadWithMocks({
+        '@opensearch-project/opensearch': { Client: MockClientConstructor },
+        '@opensearch-project/opensearch/aws': { AwsSigv4Signer: AwsSigv4SignerStub },
+        '@aws-sdk/credential-provider-node': { defaultProvider: defaultProviderStub }
+      })
+
+      acapi.config.elasticSearch.servers = [{ server: 'main', host: 'aws.example.com', port: 443, awsCluster: true }]
+      acapi.config.elasticSearch.indices = [
+        { model: 'docs', server: 'main', instance: 'main' }
+      ]
+
+      const { init } = awsModuleFactory(acapi)
+      await init()
+
+      assert.ok(AwsSigv4SignerStub.calledOnce)
+      assert.ok(defaultProviderStub.calledOnce)
+      assert.ok(credentialsProvider.calledOnce)
+    })
+
+    it('uses localElasticSearch config for host, port, and protocol', async () => {
+      acapi.config.localElasticSearch = { protocol: 'http', host: 'local-host', port: 9201 }
+      acapi.config.elasticSearch.servers = [{ server: 'main', host: 'remote-host', port: 9200 }]
+      acapi.config.elasticSearch.indices = [
+        { model: 'docs', server: 'main', instance: 'main' }
+      ]
+
+      const { init } = moduleFactory(acapi)
+      await init()
+
+      const esConfig = MockClientConstructor.firstCall.args[0]
+      assert.equal(esConfig.node.url.hostname, 'local-host')
+      assert.equal(esConfig.node.url.port, '9201')
+      assert.equal(esConfig.node.url.protocol, 'http:')
+    })
+
+    it('continues init when cluster.stats throws', async () => {
+      mockClient.cluster.stats.rejects(new Error('cluster unavailable'))
+      acapi.config.elasticSearch.servers = [{ server: 'main', host: 'localhost', port: 9200 }]
+      acapi.config.elasticSearch.indices = [
+        { model: 'docs', server: 'main', instance: 'main' }
+      ]
+
+      const { init } = moduleFactory(acapi)
+      const result = await init()
+
+      assert.ok(Array.isArray(result))
     })
   })
 
