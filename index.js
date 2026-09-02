@@ -1,4 +1,3 @@
-const _ = require('lodash') 
 const { randomUUID } = require('crypto')
 
 const { defaultProvider } = require('@aws-sdk/credential-provider-node')
@@ -23,9 +22,9 @@ module.exports = (acapi) => {
   const credentialsProvider = defaultProvider()
 
   const getClient = async ({ instance, server, index, region = 'eu-central-1', keepAlive = true }) => {
-    const protocol = _.get(acapi.config, 'localElasticSearch.protocol') || _.get(server, 'protocol', 'https')
-    const host = _.get(acapi.config, 'localElasticSearch.host') ||  _.get(server, 'host', 9200)
-    const port =  _.get(acapi.config, 'localElasticSearch.port') ||  _.get(server, 'port')
+    const protocol = acapi.config.localElasticSearch?.protocol || server?.protocol || 'https'
+    const host = acapi.config.localElasticSearch?.host || server?.host
+    const port = acapi.config.localElasticSearch?.port || server?.port
     const url =  `${protocol}://${host}:${port}`
 
     const esConfig = {
@@ -34,41 +33,41 @@ module.exports = (acapi) => {
         ssl: {
           // allow different certificate for SSH tunnel on NON-production system
           rejectUnauthorized: acapi.config.environment === 'production'
-        }  
+        }
       },
-      auth: _.get(server, 'auth'),
-      requestTimeout: _.get(acapi.config, 'elasticSearch.timeout', 30000),
+      auth: server?.auth,
+      requestTimeout: acapi.config.elasticSearch?.timeout ?? 30000,
     }
     if (keepAlive) { esConfig.agent = keepAliveAgent }
 
-    if (!acapi.config.localElasticSearch && _.get(server, 'awsCluster')) {
+    if (!acapi.config.localElasticSearch && server?.awsCluster) {
       const osConnector = AwsSigv4Signer({
         service: 'es',
         region,
         // Example with AWS SDK V3:
         getCredentials: () => credentialsProvider(),
       })
-      _.merge(esConfig, osConnector)
+      Object.assign(esConfig, osConnector)
     }
     acapi.elasticSearch[instance] = new Client(esConfig)
-    
+
     const serverInfo = {
       instance,
-      index: _.get(index, 'index'),
+      index: index?.index,
       host,
       port
     }
     // check version
     try {
       const result = await acapi.elasticSearch[instance].cluster.stats()
-      serverInfo.cluster = _.get(result, 'body.cluster_name')
-      serverInfo.clusterVersion = _.get(result, 'body.nodes.versions[0]')
+      serverInfo.cluster = result?.body?.cluster_name
+      serverInfo.clusterVersion = result?.body?.nodes?.versions?.[0]
 
       // check if index exists
-      await acapi.elasticSearch[instance].indices.exists({ index: _.get(index, 'index') })
+      await acapi.elasticSearch[instance].indices.exists({ index: index?.index })
     }
     catch(e) {
-      console.error(84, e)
+      acapi.log.error('Bootstrap | ES | getClient | Failed %j', e.message)
     }
 
     serverInfo.collectOnly = true
@@ -80,45 +79,43 @@ module.exports = (acapi) => {
     const response = await acapi.elasticSearch[index.instance].count({
       index: index.index
     })
-    return _.get(response, 'body.count')
+    return response?.body?.count
   }
 
   const init = async() => {
     let logCollector = []
-    
+
     // init multiple instances for different purposes
     acapi.elasticSearch = {}
-    
+
     let indices = acapi.config.elasticSearch.indices || []
     // filter out indices with omitInTest = true
     if (acapi.config.environment === 'test') {
-      indices = _.filter(indices, index => {
-        if (!index.omitInTest) { return index }
-      })
+      indices = indices.filter(index => !index.omitInTest)
     }
-  
+
     for (const index of indices) {
-      if (acapi.config.environment === 'test' && _.get(index, 'omitInTest')) { return } 
-      const instance = _.get(index, 'instance')
-      const server = _.find(acapi.config.elasticSearch.servers, { server: _.get(index, 'server') })
+      if (acapi.config.environment === 'test' && index.omitInTest) { continue }
+      const instance = index.instance
+      const server = acapi.config.elasticSearch.servers.find(s => s.server === index.server)
       if (!server) { throw new Error({ message: 'serverConfigurationMissingForES' }) }
 
       // update config with environment if not global
-      const pos = _.findIndex(indices, { model: index.model })
+      const pos = indices.findIndex(i => i.model === index.model)
       index.index = (!index.global ? acapi.config.environment + '_' : '') + (process.env.NODE_TEST_ORIGIN ? process.env.NODE_TEST_ORIGIN + '_' : '' ) + (index.indexInfix || index.model)
       indices.splice(pos, 1, index)
 
       // check if instance is already created - do not instanciate multiple times, we can re-use it
-      if (_.has(acapi.elasticSearch, instance)) {
+      if (instance in acapi.elasticSearch) {
         logCollector = logCollector.concat(acapi.aclog.serverInfo({
           instance,
-          index: _.get(index, 'index'),
+          index: index.index,
           collectOnly: true
         }))
       }
       else {
         // create an elasticsearch client for your Amazon ES
-        const infoLogs = await getClient({ instance, server, index, debug: _.get(index, 'debug') })
+        const infoLogs = await getClient({ instance, server, index, debug: index.debug })
         logCollector = logCollector.concat(infoLogs)
       }
       try {
@@ -127,11 +124,11 @@ module.exports = (acapi) => {
           field: 'DocCount',
           value: docCount
         })
-      } 
+      }
       catch (err) {
         logCollector.push({
           field: 'DocCount',
-          value: _.get(err, 'message', 'Error')
+          value: err?.message ?? 'Error'
         })
       }
       logCollector.push({
@@ -143,12 +140,12 @@ module.exports = (acapi) => {
 
   const checkForSnapshot = async({ instance }) => {
     const response = await acapi.elasticSearch[instance].snapshot.status()
-    return _.get(response, 'body.error.root_cause[0].type') 
+    return response?.body?.error?.root_cause?.[0]?.type
   }
-  
+
 
   const prepareForTest = async({ instance, createMapping }) => {
-    const index = _.find(acapi.config.elasticSearch.indices, { model: instance })
+    const index = acapi.config.elasticSearch.indices.find(i => i.model === instance)
     const logCollector = []
 
     // reset ES in for tests
@@ -156,27 +153,27 @@ module.exports = (acapi) => {
     try {
       const snapshotStatus = await checkForSnapshot({ instance })
       if (snapshotStatus ===  'snapshot_in_progress_exception') {
-        acapi.log.warn('Bootstrap | ES | Cluster is snapshotting... we are waiting | %j', snapshotStatus)  
+        acapi.log.warn('Bootstrap | ES | Cluster is snapshotting... we are waiting | %j', snapshotStatus)
         await new Promise(resolve => setTimeout(resolve, 1000))
-        await prepareForTest({ instance })                  
+        await prepareForTest({ instance })
       }
     }
     catch(e) {
       acapi.log.error('Bootstrap | ES | checkForSnapshot | Failed %j', e.message)
-      throw new Error('checkForSnapshotFaild')
+      throw new Error('checkForSnapshotFailed')
     }
-    
+
     const response = await acapi.elasticSearch[instance].indices.delete({
       index: `${index.index}*`,
       ignore_unavailable: true
     })
     logCollector.push({
       field: 'Deleted index',
-      value: _.get(response, 'body.acknowledged')
+      value: response?.body?.acknowledged
     })
 
     // only create mapping if the function is async
-    if (_.isFunction(createMapping)) {
+    if (typeof createMapping === 'function') {
       const uuidIndex = `${index.index}_${randomUUID()}`
       logCollector.push({
         field: 'Creating',
@@ -198,7 +195,7 @@ module.exports = (acapi) => {
       })
       logCollector.push({
         field: 'Index ready',
-        value: _.get(response, 'body.acknowledged')
+        value: response?.body?.acknowledged
       })
     }
     return logCollector
