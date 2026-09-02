@@ -1,3 +1,18 @@
+## [2.0.16](https://github.com/admiralcloud/ac-bootstrap-bull/compare/v2.0.15..v2.0.16) (2026-09-02 14:09:19)
+
+
+### Bug Fix
+
+
+* **App:** Package updates | MP | [7117855db2354aa86e3a6682b47a1537a30df33a](https://github.com/admiralcloud/ac-bootstrap-bull/commit/7117855db2354aa86e3a6682b47a1537a30df33a)    
+Package updates  
+Related issues:
+### Refactor
+
+
+* **App:** Move credentialProvider to global position | MP | [90877ad7d970f2f12514398f1c9e6d2a32078f8e](https://github.com/admiralcloud/ac-bootstrap-bull/commit/90877ad7d970f2f12514398f1c9e6d2a32078f8e)    
+Move credentialProvider to global position  
+Related issues:
 ## [2.0.15](https://github.com/admiralcloud/ac-bootstrap-bull/compare/v2.0.14..v2.0.15) (2026-05-19 08:59:21)
 
 
