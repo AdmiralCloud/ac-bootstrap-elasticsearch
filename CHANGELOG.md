@@ -1,3 +1,12 @@
+## [2.0.17](https://github.com/admiralcloud/ac-bootstrap-elasticsearch/compare/v2.0.16..v2.0.17) (2026-09-02 18:05:43)
+
+
+### Bug Fix
+
+
+* **App:** Several bug fixes and lodash replacement | MP | [ecca24383f8490da2547b03e99caa2798048940e](https://github.com/admiralcloud/ac-bootstrap-elasticsearch/commit/ecca24383f8490da2547b03e99caa2798048940e)    
+Several bug fixes and lodash replacement  
+Related issues:
 ## [2.0.16](https://github.com/admiralcloud/ac-bootstrap-bull/compare/v2.0.15..v2.0.16) (2026-09-02 14:09:19)
 
 
