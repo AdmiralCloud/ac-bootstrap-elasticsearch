@@ -373,11 +373,11 @@ describe('ac-bootstrap-elasticsearch', () => {
       clock.restore()
     })
 
-    it('throws checkForSnapshotFaild when the snapshot check itself errors', async () => {
+    it('throws checkForSnapshotFailed when the snapshot check itself errors', async () => {
       mockClient.snapshot.status.rejects(new Error('network error'))
 
       const { prepareForTest } = moduleFactory(acapi)
-      await assert.rejects(prepareForTest({ instance: 'docs' }), { message: 'checkForSnapshotFaild' })
+      await assert.rejects(prepareForTest({ instance: 'docs' }), { message: 'checkForSnapshotFailed' })
     })
   })
 })
