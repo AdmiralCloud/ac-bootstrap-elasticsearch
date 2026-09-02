@@ -20,6 +20,8 @@ const keepAliveAgent = new https.Agent({
 module.exports = (acapi) => {
 
 
+  const credentialsProvider = defaultProvider()
+
   const getClient = async ({ instance, server, index, region = 'eu-central-1', keepAlive = true }) => {
     const protocol = _.get(acapi.config, 'localElasticSearch.protocol') || _.get(server, 'protocol', 'https')
     const host = _.get(acapi.config, 'localElasticSearch.host') ||  _.get(server, 'host', 9200)
@@ -44,11 +46,7 @@ module.exports = (acapi) => {
         service: 'es',
         region,
         // Example with AWS SDK V3:
-        getCredentials: () => {
-          // Any other method to acquire a new Credentials object can be used.
-          const credentialsProvider = defaultProvider()
-          return credentialsProvider()
-        },
+        getCredentials: () => credentialsProvider(),
       })
       _.merge(esConfig, osConnector)
     }
